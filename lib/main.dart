@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'alarms.dart';
+import 'events.dart';
+import 'alarm.dart';
 
 void main() => runApp(MyApp());
 
@@ -28,13 +32,32 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  List<String> alarms = ["puppy", "fish"];
+  @override
+  void initState() {
+    super.initState();
+    this._getAlarms().then(
+      (alarms) => setState( () { _alarms = alarms.alarms; } )
+    );
+  }
 
-  void _newAlarm() {
+  List<Alarm> _alarms = [];
+  List<String> events = ["open", "fish"];
+
+  void _newAlarm() async {
     showTimePicker(
       initialTime: TimeOfDay.now(),
       context: context,
-    );
+    ).then((time) => setState((){ _alarms = new List.from(_alarms)..addAll([new Alarm(alarmTime: time.toString())]); }));
+  }
+
+  Future<AlarmsList> _getAlarms() async {
+    final response = await http.get('https://med-ded-server.azurewebsites.net/alarms');
+    if (response.statusCode == 200) {
+    return AlarmsList.fromJson(jsonDecode(response.body));
+  } else {
+      // If that response was not OK, throw an error.
+      throw Exception('Failed to load post');
+    }
   }
 
   Widget build(BuildContext context) {
@@ -53,8 +76,8 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           body: TabBarView(
             children: [
-              Icon(Icons.directions_car),
-              Alarms( data: alarms)
+              Events( data:  events),
+              Alarms( data: _alarms )
             ],
           ),
           floatingActionButton: FloatingActionButton(

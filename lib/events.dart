@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
-import 'alarmcol.dart';
-import 'alarm.dart';
+import 'eventcol.dart';
 
-class Alarms extends StatelessWidget {
+class Events extends StatelessWidget {
 
-  Alarms({Key key, this.data}) : super(key: key);
+  Events({Key key, this.data}) : super(key: key);
 
-  final List<Alarm> data;
+  final List<String> data;
 
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: data.length,
       padding: EdgeInsets.all(8.0),
-      itemExtent: 70.0,
+      itemExtent: 60.0,
       itemBuilder: (BuildContext context, int index) {
-        return AlarmCol(text: data[index].alarmTime);   
+        return EventCol(text: data[index]);   
       },
     );
   }
