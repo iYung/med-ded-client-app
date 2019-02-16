@@ -41,25 +41,38 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Alarm> _alarms = [];
   List<String> events = ["open", "fish"];
 
-  void _newAlarm() async {
-    showTimePicker(
+  Future<void> _newAlarm() async {
+    final time = await showTimePicker(
       initialTime: TimeOfDay.now(),
       context: context,
-    ).then((time) => setState((){ _alarms = new List.from(_alarms)..addAll([new Alarm(alarmTime: time.toString())]); }));
+    );
+    Map map = {
+      'alarmTime': time.toString().substring(10,15),
+    };
+    final post = await http.post('https://med-ded-server.azurewebsites.net/alarms', body: map);
+    setState((){ _alarms = new List.from(_alarms)..addAll([new Alarm(alarmTime: time.toString().substring(10,15))])..sort((a, b) => a.alarmTime.compareTo(b.alarmTime)); });
   }
 
   Future<void> _getAlarms() async {
     final alarms = await this._getAlarmsFromAPI();
-    setState( () { _alarms = alarms.alarms; } );
+    setState( () { _alarms = alarms.alarms..sort((a, b) => a.alarmTime.compareTo(b.alarmTime)); } );
   }
 
   Future<AlarmsList> _getAlarmsFromAPI() async {
     final response = await http.get('https://med-ded-server.azurewebsites.net/alarms');
     if (response.statusCode == 200) {
-    return AlarmsList.fromJson(jsonDecode(response.body));
-  } else {
+      return AlarmsList.fromJson(jsonDecode(response.body));
+    } else {
       throw Exception('Failed to load post');
     }
+  }
+
+  Future<void> _delAlarm(time) async {
+    Map map = {
+      'alarmTime': time,
+    };
+    final post = await http.post('https://med-ded-server.azurewebsites.net/alarms/del', body: map);
+    setState( () { _alarms = _alarms.where((alarm) => alarm.alarmTime != time).toList(); } );
   }
 
   Widget build(BuildContext context) {
@@ -79,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
           body: TabBarView(
             children: [
               Events( data:  events ),
-              Alarms( data: _alarms, onRefresh: _getAlarms, )
+              Alarms( data: _alarms, onRefresh: _getAlarms, alarmDelete: _delAlarm,)
             ],
           ),
           floatingActionButton: FloatingActionButton(

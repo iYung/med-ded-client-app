@@ -4,10 +4,11 @@ import 'alarm.dart';
 
 class Alarms extends StatelessWidget {
 
-  Alarms({Key key, this.data, this.onRefresh}) : super(key: key);
+  Alarms({Key key, this.data, this.onRefresh, this.alarmDelete}) : super(key: key);
 
   final List<Alarm> data;
   final dynamic onRefresh;
+  final dynamic alarmDelete;
 
   Widget build(BuildContext context) {
     return RefreshIndicator(
@@ -16,7 +17,7 @@ class Alarms extends StatelessWidget {
           padding: EdgeInsets.all(8.0),
           itemExtent: 70.0,
           itemBuilder: (BuildContext context, int index) {
-            return AlarmCol(text: data[index].alarmTime);   
+            return AlarmCol(text: data[index].alarmTime, alarmDelete: alarmDelete,);   
           },
         ),
       onRefresh: onRefresh,
