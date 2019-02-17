@@ -15,7 +15,7 @@ class Alarms extends StatelessWidget {
       child: ListView.builder(
           itemCount: data.length,
           padding: EdgeInsets.all(8.0),
-          itemExtent: 70.0,
+          itemExtent: 60.0,
           itemBuilder: (BuildContext context, int index) {
             return AlarmCol(text: data[index].alarmTime, alarmDelete: alarmDelete,);   
           },
