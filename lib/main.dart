@@ -83,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
           appBar: AppBar(
             bottom: TabBar(
               tabs: [
-                Tab(icon: Icon(Icons.calendar_today)),
+                Tab(icon: Icon(Icons.info)),
                 Tab(icon: Icon(Icons.access_alarm)),
               ],
             ),

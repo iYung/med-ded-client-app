@@ -8,20 +8,17 @@ class AlarmCol extends StatelessWidget {
   final dynamic alarmDelete;
 
   Widget build(BuildContext context) {
-    return Card(child: 
-      Container(
-        height: 100,
+    return Card(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Text(text, textAlign: TextAlign.center),
-            IconButton(
-              icon: Icon(Icons.remove),
+            Expanded(child: Text(text, textAlign: TextAlign.center, style: TextStyle(fontSize: 20),), flex: 7,),
+            Expanded(child: IconButton(
+              icon: Icon(Icons.delete_forever, color: Colors.red,),
               tooltip: "Delete this alarm",
               onPressed: () => alarmDelete(text),
-            )
+            ), flex: 3)
           ],
-        ),
       )
     ); 
   }
